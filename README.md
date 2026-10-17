@@ -1,2 +1,2 @@
-# my-online-store1
+# SirisNutriCare
 My online product store
