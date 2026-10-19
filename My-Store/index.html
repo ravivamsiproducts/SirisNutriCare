@@ -29,6 +29,61 @@
 
     html { scroll-behavior: smooth; }
 
+    a:focus-visible, button:focus-visible, summary:focus-visible {
+      outline: 3px solid #7b9e5c;
+      outline-offset: 4px;
+    }
+
+    .skip-link {
+      position: fixed;
+      left: 16px;
+      top: 12px;
+      z-index: 100;
+      padding: 10px 14px;
+      background: white;
+      color: var(--green-dark);
+      border: 2px solid var(--green);
+      border-radius: 10px;
+      transform: translateY(-160%);
+    }
+
+    .skip-link:focus { transform: translateY(0); }
+
+    .back-to-top {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 25;
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      background: var(--green);
+      color: white;
+      box-shadow: 0 8px 24px #203f3030;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: opacity .2s ease, transform .2s ease;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
     body {
       font-family: Inter, Arial, sans-serif;
       background: var(--cream);
@@ -574,7 +629,7 @@
 </head>
 
 <body>
-  <div class="topbar">
+  <a class="skip-link" href="#main-content">Skip to main content</a>\n  <div class="topbar">
     SMALL, SUSTAINABLE STEPS. A HEALTHIER YOU.
   </div>
 
@@ -869,7 +924,7 @@
     </section>
   </main>
 
-  <footer id="contact">
+  <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top" title="Back to top">↑</button>\n\n  <footer id="contact">
     <div class="container">
       <div class="footer-grid">
         <div>
@@ -929,6 +984,23 @@
     });
 
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    const backToTop = document.getElementById("backToTop");
+    const updateBackToTop = () => {
+      backToTop.classList.toggle("visible", window.scrollY > 450);
+    };
+
+    window.addEventListener("scroll", updateBackToTop, { passive: true });
+    updateBackToTop();
+
+    backToTop.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth"
+      });
+    });
   </script>
 </body>
 </html>
